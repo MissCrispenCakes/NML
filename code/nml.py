@@ -4,14 +4,23 @@ import time
 import cv2
 import sys
 import imutils
-from PIL import Image, ImageEnhance
+from PIL import Image
 import os
 
 from neopixel import *
 import _rpi_ws281x as ws
 
+import tweepy
 
-from escpos.printer import Usb
+consumer_key = 'oqtXi83U733AIb3h8jtNjh7eU'
+consumer_secret = 'tDfbMlPCf2qcXuhLjwF7fdZ3IDVt5n5yyUOCSMcbOKheCqGj30'
+access_token = '974441467254099968-q76teW3M5LCRD7XaaptZe0BFtqNOMMq'
+access_token_secret = 'qdFgf2RjXkG4pNq2qfZ1BW4Gy9ebBdrYnMKE87y9Gc9yT'
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+api = tweepy.API(auth)
 
 # LED strip configuration:
 LED_COUNT      = 31      # Number of LED pixels.
@@ -143,24 +152,17 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         print("State TAKEPHOTO")
 
         printImage = Image.fromarray(imagePrint)
-        printImage2 = printImage.resize((384, 288), Image.BICUBIC)
-        enhancer = ImageEnhance.Brightness(printImage2)
-        printImage3 = enhancer.enhance(2.0)
         
-        printer = Usb(0x0416, 0xaabb, 0, "POS-5890")
-        printer.open()
-        printer.image(printImage3)
-        printer.text("\n\n\n\n\n\n\n\n\n\n\n")
-        printer.close()
-        printer = "not a printer"
-
         i = 0
 
-        while os.path.exists("love_photo_%s.jpg" % i):
+        while os.path.exists("photos/love_photo_%s.jpg" % i):
             i += 1
 
-        printImage.save("love_photo_%s.jpg" % i)
+        printImage.save("photos/love_photo_%s.jpg" % i)
 
+        statusMessage = "Two faces detected!"
+
+        api.update_with_media("photos/love_photo_%s.jpg" % i, statusMessage)
 
         currentState = STATE_SPARKLE
 
