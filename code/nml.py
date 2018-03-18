@@ -12,10 +12,10 @@ import _rpi_ws281x as ws
 
 import tweepy
 
-consumer_key = 'oqtXi83U733AIb3h8jtNjh7eU'
-consumer_secret = 'tDfbMlPCf2qcXuhLjwF7fdZ3IDVt5n5yyUOCSMcbOKheCqGj30'
-access_token = '974441467254099968-q76teW3M5LCRD7XaaptZe0BFtqNOMMq'
-access_token_secret = 'qdFgf2RjXkG4pNq2qfZ1BW4Gy9ebBdrYnMKE87y9Gc9yT'
+consumer_key = ''
+consumer_secret = ''
+access_token = ''
+access_token_secret = ''
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
