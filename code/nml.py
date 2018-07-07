@@ -6,21 +6,20 @@ import sys
 import imutils
 from PIL import Image
 import os
+import pygame
 
 from neopixel import *
 import _rpi_ws281x as ws
 
-import tweepy
+# import tweepy
 
-consumer_key = 'oqtXi83U733AIb3h8jtNjh7eU'
-consumer_secret = 'tDfbMlPCf2qcXuhLjwF7fdZ3IDVt5n5yyUOCSMcbOKheCqGj30'
-access_token = '974441467254099968-q76teW3M5LCRD7XaaptZe0BFtqNOMMq'
-access_token_secret = 'qdFgf2RjXkG4pNq2qfZ1BW4Gy9ebBdrYnMKE87y9Gc9yT'
+pygame.init()
+screen = pygame.display.set_mode((1280,800), pygame.FULLSCREEN)
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
+# aauth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+# aauth.set_access_token(access_token, access_token_secret)
 
-api = tweepy.API(auth)
+# api = tweepy.API(auth)
 
 # LED strip configuration:
 LED_COUNT      = 31      # Number of LED pixels.
@@ -111,8 +110,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     #for (x, y, w, h) in faces:
     #    cv2.circle(image, (x+w/2, y+h/2), int((w+h)/3), (255, 255, 255), 1)
     # show the frame
-    cv2.imshow("Frame", image)
-    key = cv2.waitKey(1) & 0xFF
+    # cv2.imshow("Frame", image)
+    # key = cv2.waitKey(1) & 0xFF
  
     numFaces = len(faces)
 
@@ -127,7 +126,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     elif(currentState == STATE_HEARTGROW):
         # run the animation
         fillInHeart(strip, Color(255,0,127), heartCounter)
-        heartCounter = heartCounter + 1
+        heartCounter = heartCounter + 4
         print("State HEARTGROW")
 
         if(heartCounter >= 16):
@@ -138,7 +137,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     elif(currentState == STATE_HEARTSHRINK):
         # run the animation
         fillInHeart(strip, Color(255,0,127), heartCounter)
-        heartCounter = heartCounter - 1
+        heartCounter = heartCounter - 4
 
         print("State HEARTSHRINK")
 
@@ -162,7 +161,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         statusMessage = "Two faces detected!"
 
-        api.update_with_media("photos/love_photo_%s.jpg" % i, statusMessage)
+        # api.update_with_media("photos/love_photo_%s.jpg" % i, statusMessage)
+
+        picture = pygame.image.load("photos/love_photo_%s.jpg" % i)
+        picture = pygame.transform.scale(picture, (1280,800))
+        rect = picture.get_rect()
+        rect = rect.move((0,0))
+        screen.blit(picture, (0,0))
+        pygame.display.update()
 
         currentState = STATE_SPARKLE
 
@@ -186,8 +192,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     rawCapture.truncate(0)
     
 	# if the `q` key was pressed, break from the loop
-    if key == ord("q"):
-        break
+    #if key == ord("q"):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            pygame.quit()
+            exit()
         
   
         
