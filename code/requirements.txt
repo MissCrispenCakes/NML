@@ -2,4 +2,4 @@ tweepy==3.6.0
 rpi_ws281x==3.0.6
 imutils==0.4.5
 picamera==1.13
-Pillow==9.0.0
+Pillow==9.3.0
